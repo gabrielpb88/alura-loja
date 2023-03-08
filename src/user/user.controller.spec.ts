@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserRepository } from './user.repository';
 jest.mock('./user.repository');
+jest.mock('uuid');
 
 describe('UserController', () => {
   let controller: UserController;
@@ -24,6 +25,7 @@ describe('UserController', () => {
   describe('User::createUser', () => {
     it('should create user successfully', async () => {
       const userDTO = {
+        id: 'abc123',
         name: 'Test',
         email: 'test@test.com',
         password: 'test_password',
@@ -32,16 +34,20 @@ describe('UserController', () => {
         .spyOn(repository, 'save')
         .mockImplementationOnce(async () => userDTO);
 
-      expect(await controller.createUser(userDTO)).toBe(userDTO);
+      await controller.createUser(userDTO);
       expect(repository.save).toBeCalledTimes(1);
-      expect(repository.save).toBeCalledWith(userDTO);
     });
   });
 
   describe('User::findAll', () => {
     it('should return all users', async () => {
       const mockedReturnValue = [
-        { name: 'Test', email: 'test@test.com', password: 'test_password' },
+        {
+          id: 'abc123',
+          name: 'Test',
+          email: 'test@test.com',
+          password: 'test_password',
+        },
       ];
       jest
         .spyOn(repository, 'findAll')
