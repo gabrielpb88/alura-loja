@@ -1,9 +1,18 @@
-import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { CreateUserDTO } from './dto/createUserDTO';
 import { UserEntity } from './user.entity';
 import { v4 as uuid } from 'uuid';
 import { GetUsersDTO } from './dto/getUsersDTO';
+import { UpdateUserDTO } from './dto/updateUserDTO';
 
 @Controller('user')
 export class UserController {
@@ -21,5 +30,10 @@ export class UserController {
     Object.entries(createUserDTO).map(([key, value]) => (entity[key] = value));
     entity.id = uuid();
     return this.userRepository.save(entity);
+  }
+
+  @Put('/:id')
+  async update(@Param('id') id: string, @Body() updateUserDTO: UpdateUserDTO) {
+    return this.userRepository.update(id, updateUserDTO);
   }
 }
