@@ -3,6 +3,7 @@ import { UserRepository } from './user.repository';
 import { CreateUserDTO } from './dto/createUserDTO';
 import { UserEntity } from './user.entity';
 import { v4 as uuid } from 'uuid';
+import { GetUsersDTO } from './dto/getUsersDTO';
 
 @Controller('user')
 export class UserController {
@@ -10,15 +11,15 @@ export class UserController {
 
   @Get()
   async findAll() {
-    return this.userRepository.findAll();
+    const users = await this.userRepository.findAll();
+    return users.map((user) => new GetUsersDTO(user.id, user.name));
   }
 
   @Post()
   async createUser(@Body() createUserDTO: CreateUserDTO) {
     const entity = new UserEntity();
-    Object.entries(([key, value]) => (entity[key] = value));
+    Object.entries(createUserDTO).map(([key, value]) => (entity[key] = value));
     entity.id = uuid();
-    await this.userRepository.save(entity);
-    return { status: HttpStatus.CREATED };
+    return this.userRepository.save(entity);
   }
 }
