@@ -37,4 +37,18 @@ describe('UserController', () => {
       expect(repository.save).toBeCalledWith(userDTO);
     });
   });
+
+  describe('User::findAll', () => {
+    it('should return all users', async () => {
+      const mockedReturnValue = [
+        { name: 'Test', email: 'test@test.com', password: 'test_password' },
+      ];
+      jest
+        .spyOn(repository, 'findAll')
+        .mockImplementationOnce(async () => mockedReturnValue);
+
+      expect(await controller.findAll()).toBe(mockedReturnValue);
+      expect(repository.findAll).toBeCalledTimes(1);
+    });
+  });
 });
