@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { UserEntity } from './user.entity';
-import { find } from 'rxjs';
 
 @Injectable()
 export class UserRepository {
@@ -34,5 +33,13 @@ export class UserRepository {
 
   private findById(id: string) {
     return this.users.find((user) => user.id === id);
+  }
+
+  async remove(id: string) {
+    const userExists = this.findById(id);
+    if (!userExists) {
+      throw Error('User not found');
+    }
+    this.users = this.users.filter((user) => user.id !== id);
   }
 }

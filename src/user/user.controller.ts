@@ -1,8 +1,8 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
-  HttpStatus,
   Param,
   Post,
   Put,
@@ -35,5 +35,14 @@ export class UserController {
   @Put('/:id')
   async update(@Param('id') id: string, @Body() updateUserDTO: UpdateUserDTO) {
     return this.userRepository.update(id, updateUserDTO);
+  }
+
+  @Delete('/:id')
+  async delete(@Param('id') id: string) {
+    try {
+      return await this.userRepository.remove(id);
+    } catch (e) {
+      return { status: 404, message: e.message };
+    }
   }
 }
